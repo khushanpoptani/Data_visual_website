@@ -1,0 +1,201 @@
+<html>
+<head>
+    <title>Main Page</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+
+<body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="{% static 'bc2.png' %}" alt="Logo">
+        </div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search...">
+            <button id="searchBtn">Search</button>
+        </div>
+    </nav>
+
+    <button id="filterBtn">Filter</button>
+
+    <!-- Hidden form -->
+    <form id="filterForm" class="hidden", method="GET" action={% url 'home' %}>
+        <div class="range-slider">
+            <label for="endYear">End Year:</label>
+            <input type="range" id="endYear" name="endYear" min="2010" max="2050">
+            <span id="selectedEndYear"></span>
+        </div>
+
+        <br>
+        <br>
+
+        <div class="dropdown">
+            <label for="Topic">Topic :</label>
+            <select id="Topic" name="Topic">
+                <!-- Dropdown options will be dynamically inserted here -->
+            </select>
+        </div>
+
+        <br>
+        <br>
+
+        <div class="dropdown">
+            <label for="sector">Sector :</label>
+            <select id="sector" name="sector">
+                <!-- Dropdown options will be dynamically inserted here -->
+            </select>
+        </div>
+
+        <br>
+        <br>
+
+        <div class="dropdown">
+            <label for="region">Region :</label>
+            <select id="region" name="region">
+                <!-- Dropdown options will be dynamically inserted here -->
+            </select>
+        </div>
+
+        <br>
+        <br>
+
+        <div class="dropdown">
+            <label for="pestle">Pestle :</label>
+            <select id="pestle" name="pestle">
+                <!-- Dropdown options will be dynamically inserted here -->
+            </select>
+        </div>
+
+        <br>
+        <br>
+
+        <div class="dropdown">
+            <label for="country">Country :</label>
+            <select id="country" name="country">
+                <!-- Dropdown options will be dynamically inserted here -->
+            </select>
+        </div>
+        
+        <br>
+        <br>
+        <br>
+
+        <button type="submit" id="applyBtn", >Apply</button>
+    </form>
+
+    <script>// Define topics array
+
+        function fetchDropdownData(url, dropdownId) {
+            $.ajax({
+                method: "GET",
+                url: url,
+                success: function(data) {
+                    const keys = ['All'];
+                    // Extract keys from data
+                    for (let key in data) {
+                        keys.push(key);
+                    }
+                    const dropdownOptions = keys;
+                    const dropdown = document.getElementById(dropdownId);
+                    // Insert options into the dropdown menu
+                    dropdownOptions.forEach(option => {
+                        const optionElement = document.createElement('option');
+                        optionElement.value = option;
+                        optionElement.textContent = option;
+                        dropdown.appendChild(optionElement);
+                    });
+                }
+            });
+        }
+        
+        fetchDropdownData('api/topic', 'Topic');
+        fetchDropdownData('api/sector', 'sector');
+        fetchDropdownData('api/region', 'region');
+        fetchDropdownData('api/pestle', 'pestle');
+        fetchDropdownData('api/country', 'country');
+        
+        // Get filter button and form elements
+        const filterBtn = document.getElementById('filterBtn');
+        const filterForm = document.getElementById('filterForm');
+        const endYearInput = document.getElementById('endYear');
+        const selectedEndYear = document.getElementById('selectedEndYear');
+        const applyBtn = document.getElementById('applyBtn');
+        
+        // Set default value of end year slider to "All"
+        endYearInput.value = "All";
+        selectedEndYear.textContent = "All";
+        
+        // Add input event listener to end year range slider
+        endYearInput.addEventListener('input', function () {
+            selectedEndYear.textContent = `${endYearInput.value}`;
+        });
+        
+        // Add click event listener to filter button
+        filterBtn.addEventListener('click', function () {
+            // Toggle visibility of form
+            if (filterForm.style.display === 'none') {
+                filterForm.style.display = 'block';
+            } else {
+                filterForm.style.display = 'none';
+            }
+        });
+        
+        // Add click event listener to apply button
+        applyBtn.addEventListener('click', function () {
+            // Add functionality to apply button here
+            // For example, you can submit the form or perform some action
+            console.log("Apply button clicked");
+        });
+        
+    </script>
+
+   
+
+
+    <br>
+
+    <div class="chart_label">Countries</div>
+    <canvas id="country_chart" width="1500" height="400" class='full_canvas'></canvas>
+    <script src="{% static "JS/countries.js" %}"></script>
+
+    <br><br>
+
+    <div class="chart_label">Region</div>
+    <canvas id="region_chart" width="1500" height="400" class='half_canvas'></canvas>
+    <script src="{% static "JS/region.js" %}"></script>
+    
+    <br><br>
+
+    <div class="chart_label">Years</div>
+    <canvas id="years_chart" width="1500" height="400" class='full_canvas'></canvas>
+    <script src="{% static "JS/years.js" %}"></script>
+
+    <br><br>
+
+    <div class="chart_label">Topic</div>
+    <canvas id="topic_chart" width="1500" height="400" class='half_canvas'></canvas>
+    <script src="{% static "JS/topic.js" %}"></script>
+
+    <br><br>
+
+    <div class="chart_label">Intensity</div>
+    <canvas id="intensity_chart" width="1500" height="400" class='full_canvas'></canvas>
+    <script src="{% static "JS/intensity.js" %}"></script>
+
+    <br><br>
+
+    <div class="chart_label">Likelihood</div>
+    <canvas id="likelihood_chart" width="1500" height="400" class='half_canvas'></canvas>
+    <script src="{% static "JS/likelihood.js" %}"></script>
+
+    <br><br>
+
+    <div class="chart_label">Relavance</div>
+    <canvas id="relavance_chart" width="300" height="65" class='full_canvas'></canvas>
+    <script src="{% static "JS/relevance.js" %}"></script>
+</body>
+</html>
